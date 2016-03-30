@@ -1,164 +1,108 @@
 var express = require('express');
 var router = express.Router();
-var mysql      = require('mysql');
-var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'nodejs'
-});
+
+var connection = require('../db_connection.js');
 
 /* GET Employee listing. */
 router.get('/', function(req, res, next) {
-    //res.send('respond with a resource Employee');
-    connection.connect(function (err){
-        console.log('Connection with the officeball MySQL database openned...');
-        if (err) return callback(new Error('Failed to connect'), null);
-        // if no error, you can do things now.
-        connection.query('SELECT * FROM employees',function(err,rows)     {
+    connection.query('SELECT * FROM employees',function(err, rows){
+        if(err)
+            console.log("Error Selecting : %s ",err );
 
-            if(err)
-                console.log("Error Selecting : %s ",err );
-
-            res.render('employees/list', { page_title:"Employees | NodeJs", data:rows});
-
-        });
-
+        res.render('employees/list', { page_title:"Employees | NodeJs", data: rows});
 
     });
 
+});
+
+/* GET new employee. */
+router.get('/new', function(req, res, next) {
+    form_data = {
+        page_title:"New Employees | NodeJs",
+        action_path: '/employees',
+        form_method: 'POST'
+    };
+    res.render('employees/new', form_data );
 
 });
 
+
 /* GET edit employee. */
-router.get('/employees/:id', function(req, res, next) {
-    res.send('respond with a resource');
+router.get('/:id', function(req, res, next) {
+    console.log(req.params);
+    connection.query('SELECT * FROM employees where id = ?',[req.params.id], function(err, rows){
+        if(err){
+            console.log("Error Selecting : %s ", err );
+            return;
+        }
+        form_data = {
+            page_title:"Employees Edit " + rows[0].name + " | NodeJs",
+            data: rows[0],
+            action_path: '/employees/edit/'+rows[0].id,
+            form_method: 'POST'
+        };
+        res.render('employees/edit', form_data );
+
+    });
+
+    //res.send('respond with a resource' + req.params.id);
 });
 
 /* PUT update listing. */
-router.put('/employees/:id', function(req, res, next) {
-    res.send('respond with a resource');
+router.post('/edit/:id', function(req, res, next) {
+    var input = JSON.parse(JSON.stringify(req.body));
+    var data = {
+
+        name    : input.name,
+        address : input.address,
+        email   : input.email,
+        position   : input.position
+
+    };
+    connection.query('UPDATE employees set ? where id = ?',[data, req.params.id], function(err, rows){
+        if(err){
+            console.log("Error Selecting : %s ",err );
+            return;
+        }
+        res.redirect('/employees');
+
+    });
 });
 
 /* Post Create Employee */
-router.post('/employees', function(req, res, next) {
-    res.send('respond with a resource');
+router.post('/', function(req, res, next) {
+    var input = JSON.parse(JSON.stringify(req.body));
+    var data = {
+
+        name    : input.name,
+        address : input.address,
+        email   : input.email,
+        position   : input.position
+
+    };
+    connection.query('INSERT into employees set ?',data, function(err, rows){
+        if(err){
+            console.log("Error Selecting : %s ",err );
+            return;
+        }
+        res.redirect('/employees');
+
+    });
+});
+
+/* Post Create Employee */
+router.get('/remove/:id', function(req, res, next) {
+    connection.query("DELETE FROM employees  WHERE id = ? ",[req.params.id], function(err, rows)
+    {
+
+        if(err)
+            console.log("Error deleting : %s ",err );
+
+        res.redirect('/employees');
+
+    });
 });
 
 
+
 module.exports = router;
-
-
-exports.list = function(req, res){
-    req.getConnection(function(err,connection){
-
-        connection.query('SELECT * FROM customer',function(err,rows)     {
-
-            if(err)
-                console.log("Error Selecting : %s ",err );
-
-            res.render('customers',{page_title:"Customers - Node.js",data:rows});
-
-        });
-
-    });
-
-};
-exports.add = function(req, res){
-    res.render('add_customer',{page_title:"Add Customers-Node.js"});
-};
-exports.edit = function(req, res){
-
-    var id = req.params.id;
-
-    req.getConnection(function(err,connection){
-
-        connection.query('SELECT * FROM customer WHERE id = ?',[id],function(err,rows)
-        {
-
-            if(err)
-                console.log("Error Selecting : %s ",err );
-
-            res.render('edit_customer',{page_title:"Edit Customers - Node.js",data:rows});
-
-        });
-
-    });
-};
-/*Save the customer*/
-exports.save = function(req,res){
-
-    var input = JSON.parse(JSON.stringify(req.body));
-
-    req.getConnection(function (err, connection) {
-
-        var data = {
-
-            name    : input.name,
-            address : input.address,
-            email   : input.email,
-            phone   : input.phone
-
-        };
-
-        var query = connection.query("INSERT INTO customer set ? ",data, function(err, rows)
-        {
-
-            if (err)
-                console.log("Error inserting : %s ",err );
-
-            res.redirect('/customers');
-
-        });
-
-        // console.log(query.sql); get raw query
-
-    });
-};/*Save edited customer*/
-exports.save_edit = function(req,res){
-
-    var input = JSON.parse(JSON.stringify(req.body));
-    var id = req.params.id;
-
-    req.getConnection(function (err, connection) {
-
-        var data = {
-
-            name    : input.name,
-            address : input.address,
-            email   : input.email,
-            phone   : input.phone
-
-        };
-
-        connection.query("UPDATE customer set ? WHERE id = ? ",[data,id], function(err, rows)
-        {
-
-            if (err)
-                console.log("Error Updating : %s ",err );
-
-            res.redirect('/customers');
-
-        });
-
-    });
-};
-
-exports.delete_customer = function(req,res){
-
-    var id = req.params.id;
-
-    req.getConnection(function (err, connection) {
-
-        connection.query("DELETE FROM customer  WHERE id = ? ",[id], function(err, rows)
-        {
-
-            if(err)
-                console.log("Error deleting : %s ",err );
-
-            res.redirect('/customers');
-
-        });
-
-    });
-};

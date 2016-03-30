@@ -16,24 +16,6 @@ var employees = require('./routes/employees');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-//connection manager in Express
-
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-
-//app.use(
-//
-//    connection(mysql,{
-//
-//      host: 'localhost',
-//      user: 'root',
-//      password : 'root',
-//      port : 3306, //port mysql
-//      database:'nodejs'
-//    },'request')
-//);
-
 
 
 app.use(logger('dev'));
@@ -77,6 +59,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-app.listen(8081);
+app.listen(5000);
 
 module.exports = app;

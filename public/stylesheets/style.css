@@ -28,21 +28,30 @@ a {
 .page-data{padding:10px;}
 .page-header{
 
-  padding:2px;
-  padding-left:40px;
+  padding: 10px 0 10px 10px;
   background:#665847;color:#FEFFFD;
 }
-.data-btn{padding-left:8px}
-.data-btn button{
-  padding:10px 20px;background:#FF9900;border:1px solid #fff;
+.data-btn{
+  padding-left:8px;
+  margin-bottom: 15px;
+}
+.data-btn a{
+  padding:10px 20px;background:#665847;border:1px solid #fff;
   color:#FEFFFD;font-weight:bold;
+  text-decoration: none;
 }
 
 .data-table{padding-left:10px;}
 .data-table table{border-collapse:collapse;border:1px solid #ddd;width:100%}
 .a-inside{padding:4px 10px;border:1px solid #fff;text-decoration:none;}
-.a-inside.edit{background-color:#00CC00;color:#fff;}
-.a-inside.delete{background-color:#D23641;color:#fff;}
+.a-inside.edit{background-color:#665847;color:#fff;}
+.a-inside.delete{background-color:#665847;color:#fff;}
+.data-table tr td {
+  text-align: center;
+}
+.data-table tr {
+  margin-bottom: 10px;
+}
 
 input[type="text"]{
 
@@ -61,9 +70,19 @@ input[type="submit"]{
 
   border:1px solid #6599FF;color:#fff;
   padding:8px 35px;font-weight:bold;
-  background:#6599FF;
+  background:#665847;
 }
 textarea{ border:1px solid #ddd;width:296px;}
 .label{font-weight:bold;}
 
-#footer{margin-left:82%;margin-top:10%}
+#footer{
+  position:absolute;
+  bottom:0;
+  width:89%;
+  height:60px;
+  padding: 10px 0 10px 10px;
+  background:#665847;color:#FEFFFD;
+}
+.center{
+text-align: center;
+}

@@ -1,39 +1,32 @@
-//include ./layouts/header
-html
-    head
-        title NOde JS
-        link(rel='stylesheet', href='/../stylesheets/style.css')
-    body
-        #wrapper
-            .page-header= page_title
-            .page-container
-                .page-data
-                    .data-btn
-                        button(onclick='addUser();') + ADD
-                    .data-table
-                        table
-                            tr
-                                th No
-                                th Name
-                                th Email
-                                th Address
-                                th Position
-                                th Action
-                            if data.length
-                                each val in data
-                                    tr
-                                        td= val.id
-                                        td= val.name
-                                        td= val.email
-                                        td= val.address
-                                        td= val.position
-                                        td(colspan="2")
-                                            a.a-inside.edit(href="../customers/edit/" + val.id) Edit
-                                            a.a-inside.edit(href='../customers/delete' + val.id) Delete
-                            else
-                                tr
-                                    td(colspan="3") No Employees
+include ../layouts/header
+
+    .page-data
+        .data-btn
+            a(href="/employees/new") + ADD
+        .data-table
+            table
+                tr
+                    th No
+                    th Name
+                    th Email
+                    th Address
+                    th Position
+                    th Action
+                if data.length
+                    each val in data
+                        tr
+                            td= val.id
+                            td= val.name
+                            td= val.email
+                            td= val.address
+                            td= val.position
+                            td(colspan="2")
+                                a.a-inside.edit(href="../employees/" + val.id) Edit
+                                a.a-inside.edit(href='../employees/remove/' + val.id, onClick="return confirm('Are you absolutely sure you want to delete?')") Delete
+                else
+                    tr
+                        td(colspan="3") No Employees
 
 
 
-//include ./layouts/footer
+    include ../layouts/footer
